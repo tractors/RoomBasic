@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Word.class},version = 4,exportSchema = false)
+@Database(entities = {Word.class},version = 5,exportSchema = false)
 public abstract class WordDatabase extends RoomDatabase {
     public abstract WordDao getWordDao();
 
@@ -23,7 +23,8 @@ public abstract class WordDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),WordDatabase.class,"word_database")
                             //.fallbackToDestructiveMigration()//强制性更新数据库，具有破坏性
                             //.addMigrations(MIGRATION_2_3)
-                            .addMigrations(MIGRATION_3_4)
+//                            .addMigrations(MIGRATION_3_4)
+                            .addMigrations(MIGRATION_4_5)
                             .build();
                 }
             }
@@ -48,6 +49,15 @@ public abstract class WordDatabase extends RoomDatabase {
                     " SELECT id,english_word,chinese_meaning FROM word");
             database.execSQL("DROP TABLE word");
             database.execSQL("ALTER TABLE word_temp RENAME to word");
+        }
+    };
+
+
+
+    static final Migration MIGRATION_4_5 = new Migration(4,5) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE word ADD COLUMN chinese_invisible INTEGER NOT NULL DEFAULT 0");
         }
     };
 
