@@ -12,6 +12,7 @@ import java.util.List;
 public class ViewModel extends AndroidViewModel {
 
     private WordRepository repository;
+    private boolean isUpdate = false;
     public ViewModel(@NonNull Application application) {
         super(application);
         repository = new WordRepository(application);
@@ -22,6 +23,13 @@ public class ViewModel extends AndroidViewModel {
     }
 
 
+    public boolean isUpdate() {
+        return isUpdate;
+    }
+
+    public void setUpdate(boolean update) {
+        isUpdate = update;
+    }
 
     public void insertWords(Word... words){
         repository.insertWords(words);

@@ -26,8 +26,11 @@ public class MainActivity extends AppCompatActivity {
     Button btnInsert, btnClear;
     private LiveData<List<Word>> allWordsLive;
     private RecyclerView recyclerView;
-    private MyAdapter myAdapter1;
-    private MyAdapter myAdapter2;
+//    private MyAdapter myAdapter1;
+//    private MyAdapter myAdapter2;
+
+    private MyAdapter2 myAdapter21;
+    private MyAdapter2 myAdapter22;
     private Switch aSwitch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,18 +40,37 @@ public class MainActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this, new SavedStateViewModelFactory(getApplication(), this)).get(ViewModel.class);
         recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        myAdapter1 = new MyAdapter(false);
-        myAdapter2 = new MyAdapter(true);
-        recyclerView.setAdapter(myAdapter1);
+//        myAdapter1 = new MyAdapter(false);
+//        myAdapter2 = new MyAdapter(true);
+
+        myAdapter21 = new MyAdapter2(false,viewModel);
+        myAdapter22 = new MyAdapter2(true,viewModel);
+//        recyclerView.setAdapter(myAdapter1);
+        recyclerView.setAdapter(myAdapter21);
+
+//        viewModel.getAllWordsLive().observe(this, new Observer<List<Word>>() {
+//            @Override
+//            public void onChanged(List<Word> words) {
+//                myAdapter1.setAllWords(words);
+//                myAdapter2.setAllWords(words);
+//
+//                myAdapter1.notifyDataSetChanged();
+//                myAdapter2.notifyDataSetChanged();
+//            }
+//        });
 
         viewModel.getAllWordsLive().observe(this, new Observer<List<Word>>() {
             @Override
             public void onChanged(List<Word> words) {
-                myAdapter1.setAllWords(words);
-                myAdapter1.notifyDataSetChanged();
+                myAdapter21.setAllWords(words);
+                myAdapter22.setAllWords(words);
+                if (!viewModel.isUpdate()){
+                    myAdapter21.notifyDataSetChanged();
+                    myAdapter22.notifyDataSetChanged();
+                } else {
+                    viewModel.setUpdate(false);
+                }
 
-                myAdapter2.setAllWords(words);
-                myAdapter2.notifyDataSetChanged();
             }
         });
         textView = findViewById(R.id.textViewNumber);
@@ -56,13 +78,23 @@ public class MainActivity extends AppCompatActivity {
         btnClear = findViewById(R.id.btn_clear);
         aSwitch = findViewById(R.id.switch1);
 
+//        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                if (b){
+//                    recyclerView.setAdapter(myAdapter2);
+//                } else {
+//                    recyclerView.setAdapter(myAdapter1);
+//                }
+//            }
+//        });
         aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b){
-                    recyclerView.setAdapter(myAdapter2);
+                    recyclerView.setAdapter(myAdapter22);
                 } else {
-                    recyclerView.setAdapter(myAdapter1);
+                    recyclerView.setAdapter(myAdapter21);
                 }
             }
         });
